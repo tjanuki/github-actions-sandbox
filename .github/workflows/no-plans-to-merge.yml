@@ -11,11 +11,15 @@ jobs:
     if: github.event.pull_request.merged == false
 
     steps:
+      - name: Output Context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
       - name: Create a Comment on PR
         uses: actions/github-script@v7
         with:
           script: |
-            github.rest.issues.createComment({
+            github.reset.issues.createComment({
                 issue_number: context.issue.number,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
