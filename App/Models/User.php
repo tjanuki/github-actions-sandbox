@@ -2,4 +2,4 @@
 
 namespace App\Models;
 
-class User { }
+class User {}
