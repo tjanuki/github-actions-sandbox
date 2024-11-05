@@ -6,6 +6,10 @@ inputs:
     description: 'PHP version to use'
     required: true
     default: '8.3'
+  coverage:
+    description: The coverage driver to use.
+    required: false
+    default: none
 
 runs:
   using: "composite"
@@ -15,6 +19,7 @@ runs:
       with:
         php-version: ${{ inputs.php-version }}
         tools: composer:v2
+        coverage: ${{ inputs.coverage }}
 
     - name: Get Composer Cache Directory
       id: composer-cache
