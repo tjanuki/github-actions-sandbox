@@ -1,0 +1,39 @@
+name: 'Setup Cache'
+description: 'Sets up caching for PHP dependencies and tools'
+
+inputs:
+  php-version:
+    description: 'PHP version to use'
+    required: true
+    default: '8.3'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup PHP and Composer
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ inputs.php-version }}
+        tools: composer:v2
+
+    - name: Get Composer Cache Directory
+      id: composer-cache
+      shell: bash
+      run: |
+        echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+    - name: Cache Composer Dependencies
+      uses: actions/cache@v3
+      with:
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-composer-
+
+    - name: Cache Laravel Pint
+      uses: actions/cache@v3
+      with:
+        path: ~/.composer/vendor/laravel/pint
+        key: ${{ runner.os }}-laravel-pint-${{ hashFiles('~/.composer/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-laravel-pint-

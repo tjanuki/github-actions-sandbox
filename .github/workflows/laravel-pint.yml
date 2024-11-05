@@ -4,31 +4,33 @@ on:
   pull_request:
 
 jobs:
-    laravel-pint:
-      runs-on: ubuntu-latest
+  laravel-pint:
+    runs-on: ubuntu-latest
 
-      steps:
-        - name: Checkout Code
-          uses: actions/checkout@v4.2.2
-          with:
-            ref: ${{ github.head_ref }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4.2.2
+        with:
+          ref: ${{ github.head_ref }}
 
-        - name: Setup PHP and Composer
-          uses: shivammathur/setup-php@v2
-          with:
-              php-version: '8.3'
-              tools: composer:v2
+      - name: Setup Cache
+        uses: ./.github/actions/setup
+        with:
+          php-version: '8.3'
 
-        - name: Install Laravel Pint
-          run: composer global require laravel/pint
+      - name: Install Laravel Pint
+        shell: bash
+        run: composer global require laravel/pint
 
-        - name: Run Pint
-          run: pint
+      - name: Run Pint
+        shell: bash
+        run: pint
 
-        - name: Push Changes Back to PR
-          run: |
-            git config --global user.email "gh-actions"
-            git config --global user.name "GitHub Actions"
-            git add .
-            git commit -m "Laravel Pint" || exit 0
-            git push
+      - name: Push Changes Back to PR
+        shell: bash
+        run: |
+          git config --global user.email "gh-actions"
+          git config --global user.name "GitHub Actions"
+          git add .
+          git commit -m "Laravel Pint" || exit 0
+          git push
